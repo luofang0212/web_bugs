@@ -1,6 +1,4 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-print('123')
-print('234')
+print('2222')
