@@ -1,0 +1,50 @@
+<div class="table-responsive">
+                                <table class="table blue-table no-margin">
+                                    <thead>
+                                        <tr>
+                                            <th width="120">姓名</th>
+                                            <th width="160">身份证</th>
+                                            <th width="120">地区</th>
+                                            <th width="120">服务</th>
+                                            <th width="150">下单时间</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>韦*</td>
+                                            <td>11***************9</td>
+                                            <td>上海</td>
+                                            <td>社保</td>
+                                            <td>2021-08-28</td>
+                                        </tr>
+                                        <tr>
+                                            <td>常*彩</td>
+                                            <td>61***************6</td>
+                                            <td>上海</td>
+                                            <td>社保</td>
+                                            <td>2021-08-28</td>
+                                        </tr>
+                                        <tr>
+                                            <td>丁*</td>
+                                            <td>11***************5</td>
+                                            <td>上海</td>
+                                            <td>社保</td>
+                                            <td>2021-08-28</td>
+                                        </tr>
+                                        <tr>
+                                            <td>丛*杰</td>
+                                            <td>61***************8</td>
+                                            <td>上海</td>
+                                            <td>社保</td>
+                                            <td>2021-08-28</td>
+                                        </tr>
+                                        <tr>
+                                            <td>倪*旭</td>
+                                            <td>41***************2</td>
+                                            <td>上海</td>
+                                            <td>社保</td>
+                                            <td>2021-08-28</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
