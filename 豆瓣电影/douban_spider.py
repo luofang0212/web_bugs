@@ -13,7 +13,7 @@ from lxml import etree
 # 1：解析html
 def parser():
     parser = etree.HTMLParser(encoding='utf-8')
-    html_element = etree.parse('豆瓣电影.html', parser=parser)
+    html_element = etree.parse('douban.html', parser=parser)
     return html_element
 
 
@@ -31,9 +31,7 @@ def get_movie_url():
 
     for hot in hots:
         hots_data = {}
-        '''
-        <li class="ui-slide-item s" data-dstat-areaid="70_7" data-dstat-mode="click,expose" data-dstat-watch=".ui-slide-content" data-dstat-viewport=".screening-bd" data-title="新大头儿子和小头爸爸4：完美爸爸" data-release="2021" data-rate="5.0" data-star="25" data-trailer="https://movie.douban.com/subject/34913583/trailer" data-ticket="https://movie.douban.com/ticket/redirect/?movie_id=34913583" data-duration="80分钟" data-region="中国大陆" data-director="何澄" data-actors="董浩 / 鞠萍 / 陈怡" data-intro="" data-enough="true" data-rater="1416">
-        '''
+
         title = hot.xpath("./@data-title")[0].strip()
         release = hot.xpath("./@data-release")[0].strip()
         rate = hot.xpath("./@data-rate")[0].strip() + '分'
