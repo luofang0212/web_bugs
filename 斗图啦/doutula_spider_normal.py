@@ -48,7 +48,7 @@ def parse_page():
             img_url = img.xpath('.//@data-backup')[0]
 
             img_name = img.xpath('.//@alt')[0]
-            img_name = re.sub('[*\?？.。！@@!]+', '', img_name)
+            img_name = re.sub('[*\?？.。！@@!、/]+', '', img_name)
             if img_name == '':
                 img_name = str(random.randint(100000, 20000000)) + str(random.randint(10, 200000))
             suffix = os.path.split(img_url)[1]
