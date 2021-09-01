@@ -2,6 +2,8 @@
 # -*- coding:utf-8 -*-
 
 import requests
+import threading
+from queue import Queue
 from lxml import etree
 import re
 import random
@@ -31,51 +33,60 @@ def down_page_url():
             fp.write(response.content)
             print("{0} 成功下载到本地！！！".format(url))
 
-def parse_page():
-    imgs_info = []
-    for i in range(1,73):
-        html_file_name = 'html/doutula_{0}'.format(i)
-        # print(html_file_name)
-       # 读取72个html文件，进行解析
-        parser= etree.HTMLParser(encoding='utf-8')
-        html_element = etree.parse(html_file_name + '.html',parser=parser)
-        # print(html_element)
-        # 获取所有img
-        imgs = html_element.xpath("//li[@class='list-group-item']//img[@referrerpolicy='no-referrer']")
+class ProductThread(threading.Thread):
+    def run(self):
+        pass
+    def parser_page(self):
+        imgs_info = []
+        for i in range(1,73):
+            html_file_name = 'html/doutula_{0}'.format(i)
+            # print(html_file_name)
+           # 读取72个html文件，进行解析
+            parser= etree.HTMLParser(encoding='utf-8')
+            html_element = etree.parse(html_file_name + '.html',parser=parser)
+            # print(html_element)
+            # 获取所有img
+            imgs = html_element.xpath("//li[@class='list-group-item']//img[@referrerpolicy='no-referrer']")
 
-        for img in imgs:
-            img_dict = {}
-            img_url = img.xpath('.//@data-backup')[0]
+            for img in imgs:
+                img_dict = {}
+                img_url = img.xpath('.//@data-backup')[0]
 
-            img_name = img.xpath('.//@alt')[0]
-            img_name = re.sub('[*\?？.。！@@!]+', '', img_name)
-            if img_name == '':
-                img_name = str(random.randint(100000, 20000000)) + str(random.randint(10, 200000))
-            suffix = os.path.split(img_url)[1]
-            name, ext = os.path.splitext(suffix)
-            file_name = img_name + ext
-            img_dict = {
-                "img_url":img_url,
-                "file_name":file_name
-            }
-            # print(img_dict)
-            imgs_info.append(img_dict)
-    return imgs_info
+                img_name = img.xpath('.//@alt')[0]
+                img_name = re.sub('[*\?？.。！@@!]+', '', img_name)
+                if img_name == '':
+                    img_name = str(random.randint(100000, 20000000)) + str(random.randint(10, 200000))
+                suffix = os.path.split(img_url)[1]
+                name, ext = os.path.splitext(suffix)
+                file_name = img_name + ext
+                img_dict = {
+                    "img_url":img_url,
+                    "file_name":file_name
+                }
+                # print(img_dict)
+                imgs_info.append(img_dict)
+        return imgs_info
 
-def start_down_imgs():
-    imgs_info = parse_page()
-    print(len(imgs_info))
-    # print(imgs_info)
-    for img in imgs_info:
-        img_url = img['img_url']
-        filename = img['file_name']
-        request.urlretrieve(img_url,"images/" + filename)
-        print("{0} 图片下载成功！！！".format(filename))
+class ComsumThread(threading.Thread):
+    def run(self):
+        pass
+    def down_imgs_url(self):
+        imgs_info = ProductThread().parse_page()
+        print(len(imgs_info))
+        # print(imgs_info)
+        for img in imgs_info:
+            img_url = img['img_url']
+            filename = img['file_name']
+            request.urlretrieve(img_url,"images/" + filename)
+            print("{0} 图片下载成功！！！".format(filename))
 
 def start():
-    # parse_page()
-    start_down_imgs()
 
+    for x in range(5):
+        t1 = ProductThread(name='生产者{0}'.format(x))
+
+    for x in range(5):
+        t1 = ComsumThread(name='消费者{0}'.format(x))
 
 if __name__ == '__main__':
     start()
