@@ -15,8 +15,6 @@ warnings.simplefilter("ignore")
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
-# 正常方式下载表情包
-
 # 下载表情包到本地
 def down_page_url():
     for x in range(1,101):
@@ -33,60 +31,94 @@ def down_page_url():
             fp.write(response.content)
             print("{0} 成功下载到本地！！！".format(url))
 
-class ProductThread(threading.Thread):
+class Producer(threading.Thread):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"
+    }
+    def __init__(self,page_queue,img_queue,*args,**kwargs):
+        super(Producer,self).__init__(*args,**kwargs)
+        self.page_queue = page_queue
+        self.img_queue = img_queue
+
     def run(self):
-        pass
-    def parser_page(self):
-        imgs_info = []
-        for i in range(1,73):
-            html_file_name = 'html/doutula_{0}'.format(i)
-            # print(html_file_name)
-           # 读取72个html文件，进行解析
-            parser= etree.HTMLParser(encoding='utf-8')
-            html_element = etree.parse(html_file_name + '.html',parser=parser)
-            # print(html_element)
-            # 获取所有img
-            imgs = html_element.xpath("//li[@class='list-group-item']//img[@referrerpolicy='no-referrer']")
+        while True:
+            if self.page_queue.empty():
+                break
+            url = self.page_queue.get()
+            self.parse_page(url)
 
-            for img in imgs:
-                img_dict = {}
-                img_url = img.xpath('.//@data-backup')[0]
+    def parse_page(self,url):
+        # print(html_file_name)
+        # 读取72个html文件，进行解析
+        parser = etree.HTMLParser(encoding='utf-8')
+        html = etree.parse(url + '.html', parser=parser)
 
-                img_name = img.xpath('.//@alt')[0]
-                img_name = re.sub('[*\?？.。！@@!]+', '', img_name)
-                if img_name == '':
-                    img_name = str(random.randint(100000, 20000000)) + str(random.randint(10, 200000))
-                suffix = os.path.split(img_url)[1]
-                name, ext = os.path.splitext(suffix)
-                file_name = img_name + ext
-                img_dict = {
-                    "img_url":img_url,
-                    "file_name":file_name
-                }
-                # print(img_dict)
-                imgs_info.append(img_dict)
-        return imgs_info
+        # 获取所有img
+        imgs = html.xpath("//li[@class='list-group-item']//img[@referrerpolicy='no-referrer']")
 
-class ComsumThread(threading.Thread):
+        for img in imgs:
+            img_url = img.xpath('.//@data-backup')[0]
+            img_name = img.xpath('.//@alt')[0]
+            img_name = re.sub('[*\?？\.。！@@!/、\s]+', '', img_name)
+            if img_name == '':
+                img_name = str(random.randint(100000, 20000000)) + str(random.randint(10, 200000))
+            suffix = os.path.split(img_url)[1]
+            name, ext = os.path.splitext(suffix)
+            file_name = img_name + ext
+            self.img_queue.put((img_url,file_name))
+
+class Consumer(threading.Thread):
+    def __init__(self,page_queue,img_queue,*args,**kwargs):
+        super(Consumer,self).__init__(*args,**kwargs)
+        self.page_queue = page_queue
+        self.img_queue = img_queue
+
     def run(self):
-        pass
-    def down_imgs_url(self):
-        imgs_info = ProductThread().parse_page()
-        print(len(imgs_info))
-        # print(imgs_info)
-        for img in imgs_info:
-            img_url = img['img_url']
-            filename = img['file_name']
-            request.urlretrieve(img_url,"images/" + filename)
-            print("{0} 图片下载成功！！！".format(filename))
+        while True:
+            if self.page_queue.empty() and self.page_queue.empty():
+                break
+            img_url,filename = self.img_queue.get()
+            request.urlretrieve(img_url,'images/'+filename)
+            print('下载成功： {0}'.format(filename))
+
 
 def start():
+    page_queue = Queue(100)
+    img_queue = Queue(100)
+
+    for x in range(1,72):
+        url = 'html/doutula_{0}'.format(x)
+        page_queue.put(url)
 
     for x in range(5):
-        t1 = ProductThread(name='生产者{0}'.format(x))
+        t1 = Producer(page_queue,img_queue,name='生产者{0}'.format(x))
+        t1.start()
 
     for x in range(5):
-        t1 = ComsumThread(name='消费者{0}'.format(x))
+        t1 = Consumer(page_queue,img_queue,name='消费者{0}'.format(x))
+        t1.start()
+
 
 if __name__ == '__main__':
     start()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

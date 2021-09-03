@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>森亿用户中心服务123</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="/css/site.css" />
+</head>
+<body>
+    <script src="/lib/jquery/jquery.js"></script>
+    <link href="/css/new-login.css" rel="stylesheet" type="text/css" />
+            <style>
+                a.wechatwork{
+                    background:url("/plugins/wechatwork/assets/icon.svg");
+                }
+                a.wechatwork:hover{
+                    background:url("/plugins/wechatwork/assets/icon-active.svg");
+                }
+                .active a.wechatwork{
+                    background:url("/plugins/wechatwork/assets/icon-active.svg");
+                }
+            </style>
+            <style>
+                a.bjca{
+                    background:url("/plugins/bjca/assets/icon.svg");
+                }
+                a.bjca:hover{
+                    background:url("/plugins/bjca/assets/icon-active.svg");
+                }
+                .active a.bjca{
+                    background:url("/plugins/bjca/assets/icon-active.svg");
+                }
+            </style>
+            <style>
+                a.wechat{
+                    background:url("/plugins/wechat/assets/icon.svg");
+                }
+                a.wechat:hover{
+                    background:url("/plugins/wechat/assets/icon-active.svg");
+                }
+                .active a.wechat{
+                    background:url("/plugins/wechat/assets/icon-active.svg");
+                }
+            </style>
+
+<style>
+    .main-page.support::after{
+        content: '技术支持：森亿智能';
+    }
+</style>
+<div class="login-page pc">
+    <div class="main-page support">
+            <div class="left-wrapper left-wrapper-background"></div>
+        <div class="right-wrapper">
+
+            <div class="body">
+                <div class="header">
+                    <img src="/synyi-logo.png" />
+                </div>
+                <div class="login-container">
+                    <div class="login-body">
+                            <form method="post" id="login-form" style="display:none" action="/Account/Login">
+                                <input type="hidden" id="ReturnUrl" name="ReturnUrl" value="" />
+                                <fieldset>
+                                    <div class="form-group">
+                                            <div class="input-group">
+                                                <input class="form-control" placeholder="请输入账户" autocomplete="new-password" name="Username" id="username" autofocus onkeydown="return ClearSubmit(event)">
+                                            </div>
+                                    </div>
+                                    <div class="form-group">
+                                            <div class="input-group">
+                                                <input type="password" autocomplete="new-password" class="form-control password" placeholder="请输入密码" name="Password" id="password" autocomplete="off" onkeydown="return PasswordSubmit(event)">
+                                            </div>
+                                    </div>
+                                    
+                                    <div class="form-group form-login">
+                                            <button class="btn btn-primary btn-login" type="submit" id="login-button">登录</button>
+                                    </div>
+                                    <div class="form-extra">
+                                    </div>
+                                </fieldset>
+                            <input name="__RequestVerificationToken" type="hidden" value="CfDJ8GUd75zXVN5EiBpA5mAKu3N3DggIorIGx9jMzZ3lzYbHgULLn_Px9KgoVMRXudzoiVfROPj41uVsSH5F8mxqHim18fluNmTvhT2oW-QMIfWzkWkpoyjPeGAheeb4pAMY9VSRwlh_jHf5BG93Qi1oVoQ" /></form>
+                                    <div id="wechatwork-form" style="display:none" class="external-box">
+                                                <iframe src="/plugins/wechatwork?redirectUrl=" scrolling="no"></iframe>
+                                    </div>
+                                    <div id="bjca-form" style="display:none" class="external-box">
+                                                <iframe src="/plugins/bjca?redirectUrl=" scrolling="no"></iframe>
+                                    </div>
+                                    <div id="wechat-form" style="display:none" class="external-box">
+                                                <iframe src="/plugins/wechat?redirectUrl=" scrolling="no"></iframe>
+                                    </div>
+                    </div>
+
+                    <ul class="nav nav-tabs" id="login-tabs">
+                            <li id="nav-local" target="login-form">
+                                <a class="login"></a>
+                            </li>
+                                <li id="nav-wechatwork" target="wechatwork-form">
+                                    <a class="wechatwork">
+                                    </a>
+                                </li>
+                                <li id="nav-bjca" target="bjca-form">
+                                    <a class="bjca">
+                                    </a>
+                                </li>
+                                <li id="nav-wechat" target="wechat-form">
+                                    <a class="wechat">
+                                    </a>
+                                </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function active(tab) {
+        if (currentTab) {
+            $("#" + currentTab.tabId).removeClass("active");
+            $("#" + currentTab.targetId).hide();
+        }
+        $("#" + tab.tabId).addClass("active");
+        $("#" + tab.targetId).show();
+        currentTab = tab;
+    }
+    // 处理Tab
+    var currentTab = null;
+    var tabElements = $("#login-tabs").children();
+    var tabs = tabElements.map(function (tabElement) {
+        var tabId = this.id;
+        var target;
+        if (this.attributes.target) {
+            target = this.attributes.target.value;
+        } else {
+            target = "";
+        }
+        return {
+            tabId: tabId, targetId: target
+        }
+    }).toArray();
+    var defaultSchema = "nav-local";
+    var defaultTab = tabs[0];
+    for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].tabId === defaultSchema) {
+            defaultTab = tabs[i];
+            break;
+        }
+    }
+    currentTab = defaultTab;
+    active(currentTab);
+    document.getElementById("login-tabs").addEventListener("click", function (event) {
+        var tabElement = event.target.parentElement;
+        var tab = null;
+        tabs.forEach(function (t) {
+            if (t.tabId === tabElement.id) {
+                tab = t;
+            }
+        })
+        if (tab && tab !== currentTab) {
+            active(tab);
+        }
+    });
+    document.addEventListener("message", function (event) {
+        console.log(event);
+    });
+</script>
+
+
+
+
+
+<script src="/js/login.js"></script>
+
+    <script>
+        function getElementsByClassName() {
+            if (!document.getElementsByClassName) {
+                document.getElementsByClassName = function (className, element) {
+                    var children = (element || document).getElementsByTagName('*');
+                    var elements = new Array();
+                    for (var i = 0; i < children.length; i++) {
+                        var child = children[i];
+                        var classNames = child.className.split(' ');
+                        for (var j = 0; j < classNames.length; j++) {
+                            if (classNames[j] == className) {
+                                elements.push(child);
+                                break;
+                            }
+                        }
+                    }
+                    return elements;
+                };
+            }
+        }
+
+        getElementsByClassName();
+    </script>
+    <script src="/lib/bootstrap/js/bootstrap.js"></script>
+    
+</body>
+</html>
